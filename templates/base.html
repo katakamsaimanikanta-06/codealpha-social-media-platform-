@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CodeAlpha Social{% endblock %}</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-full bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 min-h-screen gap-0 md:gap-6">
+      
+      <!-- ================= LEFT SIDEBAR (Navigation) ================= -->
+      <aside class="hidden md:flex md:col-span-1 lg:col-span-3 flex-col justify-between py-6 sticky top-0 h-screen border-r border-slate-200/80 pr-4">
+        <div class="space-y-6">
+          
+          <!-- Logo -->
+          <a href="{% url 'posts:feed' %}" class="flex items-center gap-2.5 px-3 py-2 group">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-100 group-hover:scale-105 transition">
+              <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
+            </div>
+            <div class="hidden lg:block">
+              <span class="font-extrabold text-xl tracking-tight text-slate-900">Pulse<span class="text-indigo-600">.</span></span>
+              <span class="block text-[10px] uppercase tracking-widest font-semibold text-slate-400 -mt-1">Social Platform</span>
+            </div>
+          </a>
+
+          <!-- Nav Items -->
+          <nav class="space-y-1 text-sm font-semibold">
+            <a href="{% url 'posts:feed' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl transition {% if request.resolver_match.url_name == 'feed' and not tab == 'explore' %}bg-indigo-50 text-indigo-700 font-bold{% else %}text-slate-700 hover:bg-slate-100{% endif %}">
+              <i data-lucide="home" class="w-5 h-5"></i>
+              <span class="hidden lg:inline">Home Feed</span>
+            </a>
+
+            <a href="{% url 'posts:feed' %}?tab=explore" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl transition {% if tab == 'explore' %}bg-indigo-50 text-indigo-700 font-bold{% else %}text-slate-700 hover:bg-slate-100{% endif %}">
+              <i data-lucide="compass" class="w-5 h-5"></i>
+              <span class="hidden lg:inline">Explore</span>
+            </a>
+
+            {% if user.is_authenticated %}
+              <a href="{% url 'accounts:profile' user.username %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl transition {% if request.resolver_match.url_name == 'profile' and profile_user == user %}bg-indigo-50 text-indigo-700 font-bold{% else %}text-slate-700 hover:bg-slate-100{% endif %}">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <span class="hidden lg:inline">My Profile</span>
+              </a>
+
+              <a href="{% url 'accounts:profile_edit' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-slate-700 hover:bg-slate-100 transition">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span class="hidden lg:inline">Edit Profile</span>
+              </a>
+
+              {% if user.is_staff %}
+                <a href="/admin/" target="_blank" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-amber-700 hover:bg-amber-50 transition">
+                  <i data-lucide="shield" class="w-5 h-5 text-amber-600"></i>
+                  <span class="hidden lg:inline">Admin Panel</span>
+                </a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'accounts:login' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-slate-700 hover:bg-slate-100 transition">
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                <span class="hidden lg:inline">Sign In</span>
+              </a>
+              <a href="{% url 'accounts:register' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-indigo-600 font-bold hover:bg-indigo-50 transition">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+                <span class="hidden lg:inline">Create Account</span>
+              </a>
+            {% endif %}
+          </nav>
+
+        </div>
+
+        <!-- Current User Profile Pill in Sidebar Bottom -->
+        {% if user.is_authenticated %}
+          <div class="pt-4 border-t border-slate-200">
+            <div class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-100 transition">
+              <a href="{% url 'accounts:profile' user.username %}" class="flex items-center gap-3 min-w-0">
+                {% if user.profile.avatar %}
+                  <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full object-cover shrink-0">
+                {% else %}
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white flex items-center justify-center font-bold text-sm shrink-0">
+                    {{ user.username|first|upper }}
+                  </div>
+                {% endif %}
+                <div class="hidden lg:block truncate">
+                  <p class="text-xs font-bold text-slate-900 truncate">{{ user.profile.display_name }}</p>
+                  <p class="text-[11px] text-slate-500 truncate">@{{ user.username }}</p>
+                </div>
+              </a>
+
+              <a href="{% url 'accounts:logout' %}" class="hidden lg:inline-block p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition" title="Sign Out">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+      </aside>
+
+      <!-- ================= CENTER COLUMN (Feed & Content) ================= -->
+      <main class="col-span-1 md:col-span-3 lg:col-span-6 min-h-screen border-r border-slate-200/80 bg-white shadow-xs">
+        
+        <!-- Mobile Header -->
+        <header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+          <a href="{% url 'posts:feed' %}" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white">
+              <i data-lucide="zap" class="w-4 h-4 fill-white"></i>
+            </div>
+            <span class="font-black text-lg text-slate-900">Pulse.</span>
+          </a>
+          
+          <div class="flex items-center gap-2">
+            {% if user.is_authenticated %}
+              <a href="{% url 'accounts:profile' user.username %}" class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">
+                {{ user.username|first|upper }}
+              </a>
+              <a href="{% url 'accounts:logout' %}" class="p-1.5 text-slate-500">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+              </a>
+            {% else %}
+              <a href="{% url 'accounts:login' %}" class="text-xs font-bold text-indigo-600 px-2 py-1">Sign In</a>
+            {% endif %}
+          </div>
+        </header>
+
+        <!-- Flash Messages -->
+        {% if messages %}
+          <div class="p-4 space-y-2">
+            {% for message in messages %}
+              <div class="server-alert flex items-center justify-between p-3 rounded-xl border text-xs font-medium {{ message.tags }}">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                  <span>{{ message }}</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+      </main>
+
+      <!-- ================= RIGHT SIDEBAR (Suggestions & Trends) ================= -->
+      <aside class="hidden lg:block lg:col-span-3 py-6 pl-4 space-y-6 sticky top-0 h-screen overflow-y-auto">
+        
+        <!-- Search Form -->
+        <form action="{% url 'posts:feed' %}" method="GET" class="relative">
+          <input 
+            type="text" 
+            name="q" 
+            value="{{ query|default:'' }}" 
+            placeholder="Search posts or creators..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-100 focus:bg-white text-xs rounded-full border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition outline-none"
+          >
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+          {% if query %}
+            <a href="{% url 'posts:feed' %}" class="absolute right-3.5 top-2.5 text-xs text-slate-400 hover:text-slate-600">✕</a>
+          {% endif %}
+        </form>
+
+        <!-- Who to Follow Widget -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+          <h3 class="font-extrabold text-slate-900 text-sm flex items-center justify-between">
+            <span>Who to Follow</span>
+            <i data-lucide="users" class="w-4 h-4 text-indigo-500"></i>
+          </h3>
+
+          <div class="divide-y divide-slate-100">
+            {% for su in suggested_users %}
+              <div class="py-2.5 flex items-center justify-between gap-3">
+                <a href="{% url 'accounts:profile' su.username %}" class="flex items-center gap-2.5 min-w-0 group">
+                  {% if su.profile.avatar %}
+                    <img src="{{ su.profile.avatar.url }}" alt="{{ su.username }}" class="w-8 h-8 rounded-full object-cover shrink-0">
+                  {% else %}
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
+                      {{ su.username|first|upper }}
+                    </div>
+                  {% endif %}
+                  <div class="truncate">
+                    <p class="font-bold text-xs text-slate-900 group-hover:text-indigo-600 truncate">{{ su.profile.display_name }}</p>
+                    <p class="text-[11px] text-slate-400 truncate">@{{ su.username }}</p>
+                  </div>
+                </a>
+
+                {% if user.is_authenticated and user != su %}
+                  <button 
+                    class="follow-toggle-btn px-3 py-1 bg-slate-900 hover:bg-indigo-600 text-white rounded-full text-xs font-bold transition shrink-0"
+                    data-username="{{ su.username }}"
+                  >
+                    Follow
+                  </button>
+                {% endif %}
+              </div>
+            {% empty %}
+              <p class="text-xs text-slate-400 py-2">No recommendations at this moment.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Trending Topics Widget -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+          <h3 class="font-extrabold text-slate-900 text-sm flex items-center justify-between">
+            <span>Trending Topics</span>
+            <i data-lucide="trending-up" class="w-4 h-4 text-indigo-500"></i>
+          </h3>
+
+          <div class="space-y-2.5">
+            {% for item in trending_tags %}
+              <a href="{% url 'posts:feed' %}?q={{ item.tag|slice:'1:' }}" class="block p-1.5 hover:bg-slate-50 rounded-xl transition">
+                <span class="text-[11px] text-slate-400 font-medium block">Technology · Trending</span>
+                <span class="text-xs font-bold text-slate-900 block hover:text-indigo-600">{{ item.tag }}</span>
+                <span class="text-[11px] text-slate-400">{{ item.posts }} posts</span>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Mini Footer -->
+        <div class="text-[11px] text-slate-400 px-2 space-y-1">
+          <p>© 2026 CodeAlpha Social Platform.</p>
+          <p>Built with Django, SQLite & JavaScript.</p>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 py-2 px-6 flex items-center justify-around">
+    <a href="{% url 'posts:feed' %}" class="p-2 text-indigo-600">
+      <i data-lucide="home" class="w-6 h-6"></i>
+    </a>
+    <a href="{% url 'posts:feed' %}?tab=explore" class="p-2 text-slate-500">
+      <i data-lucide="compass" class="w-6 h-6"></i>
+    </a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'accounts:profile' user.username %}" class="p-2 text-slate-500">
+        <i data-lucide="user" class="w-6 h-6"></i>
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="p-2 text-slate-500">
+        <i data-lucide="log-in" class="w-6 h-6"></i>
+      </a>
+    {% endif %}
+  </div>
+
+  <!-- Scripts -->
+  <script src="{% static 'js/social.js' %}"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Post | CodeAlpha Social{% endblock %}
+
+{% block content %}
+<div class="p-6 space-y-6">
+
+  <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+    <a href="{% url 'posts:post_detail' post.id %}" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition">
+      <i data-lucide="arrow-left" class="w-5 h-5"></i>
+    </a>
+    <h1 class="text-lg font-black text-slate-900">Edit Post</h1>
+  </div>
+
+  <form action="{% url 'posts:post_edit' post.id %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Post Content</label>
+      <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 focus-within:bg-white focus-within:border-indigo-500 transition">
+        {{ form.content }}
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Change or Replace Image</label>
+      {% if post.image %}
+        <div class="mb-3 w-40 h-40 rounded-xl overflow-hidden border border-slate-200">
+          <img src="{{ post.image.url }}" alt="Current post image" class="w-full h-full object-cover">
+        </div>
+      {% endif %}
+      {{ form.image }}
+    </div>
+
+    <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
+      <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-full shadow-sm transition">
+        Save Changes
+      </button>
+      <a href="{% url 'posts:post_detail' post.id %}" class="px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-full text-xs font-bold transition">
+        Cancel
+      </a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}
