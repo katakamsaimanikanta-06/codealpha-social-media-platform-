@@ -1,24 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ profile_user.profile.display_name }} (@{{ profile_user.username }}) | CodeAlpha Social{% endblock %}
+{% block title %}{{ profile_user.profile.display_name }} (@{{ profile_user.username }}) | Nexus{% endblock %}
 
 {% block content %}
 <div class="space-y-0">
 
   <!-- Sticky Top Bar with Back Button -->
-  <div class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-3 flex items-center gap-4">
-    <a href="{% url 'posts:feed' %}" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition">
-      <i data-lucide="arrow-left" class="w-5 h-5"></i>
-    </a>
-    <div>
-      <h1 class="text-base font-extrabold text-slate-900 leading-tight">{{ profile_user.profile.display_name }}</h1>
-      <p class="text-[11px] text-slate-400 font-medium">{{ profile.posts_count }} posts</p>
+  <div class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3.5">
+      <a href="{% url 'posts:feed' %}" class="p-2 text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </a>
+      <div>
+        <h1 class="text-base font-extrabold text-slate-900 leading-tight flex items-center gap-1">
+          <span>{{ profile_user.profile.display_name }}</span>
+          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-sky-500 fill-sky-500 text-white"></i>
+        </h1>
+        <p class="text-[11px] text-slate-400 font-medium">{{ profile.posts_count }} posts published</p>
+      </div>
     </div>
   </div>
 
   <!-- Cover Header -->
-  <div class="h-44 sm:h-52 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
+  <div class="h-44 sm:h-52 bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-400 relative overflow-hidden">
     {% if profile.cover_image %}
       <img src="{{ profile.cover_image.url }}" alt="Cover image" class="w-full h-full object-cover">
     {% else %}
@@ -32,11 +37,11 @@
     <!-- Avatar & Action Button Bar -->
     <div class="flex items-end justify-between -mt-16 sm:-mt-20">
       <!-- Large Avatar -->
-      <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white overflow-hidden bg-white shadow-md">
+      <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white overflow-hidden bg-white shadow-lg shrink-0">
         {% if profile.avatar %}
           <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" class="w-full h-full object-cover">
         {% else %}
-          <div class="w-full h-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center font-black text-3xl sm:text-4xl">
+          <div class="w-full h-full bg-gradient-to-tr from-sky-500 to-cyan-500 text-white flex items-center justify-center font-black text-3xl sm:text-4xl">
             {{ profile_user.username|first|upper }}
           </div>
         {% endif %}
@@ -45,19 +50,19 @@
       <!-- Action Button (Edit Profile or Follow/Unfollow) -->
       <div class="pb-2">
         {% if is_self %}
-          <a href="{% url 'accounts:profile_edit' %}" class="px-4 py-2 rounded-full border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-xs transition">
+          <a href="{% url 'accounts:profile_edit' %}" class="px-5 py-2.5 rounded-full border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-xs transition shadow-xs">
             Edit Profile
           </a>
         {% elif user.is_authenticated %}
           <button 
-            class="follow-toggle-btn px-5 py-2 rounded-full font-bold text-xs transition {% if is_following %}bg-slate-100 text-slate-700 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200{% else %}bg-slate-900 text-white hover:bg-indigo-600{% endif %}"
+            class="follow-toggle-btn px-6 py-2.5 rounded-full font-bold text-xs transition shadow-xs {% if is_following %}bg-slate-100 text-slate-700 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200{% else %}bg-slate-900 text-white hover:bg-sky-600{% endif %}"
             data-username="{{ profile_user.username }}"
             data-is-profile-target="true"
           >
             {% if is_following %}Following{% else %}Follow{% endif %}
           </button>
         {% else %}
-          <a href="{% url 'accounts:login' %}" class="px-5 py-2 bg-slate-900 text-white rounded-full font-bold text-xs hover:bg-indigo-600 transition">
+          <a href="{% url 'accounts:login' %}" class="px-6 py-2.5 bg-slate-900 text-white rounded-full font-bold text-xs hover:bg-sky-600 transition shadow-xs">
             Follow
           </a>
         {% endif %}
@@ -67,7 +72,10 @@
     <!-- Names & Bio -->
     <div class="space-y-2">
       <div>
-        <h2 class="text-xl font-black text-slate-900">{{ profile_user.profile.display_name }}</h2>
+        <h2 class="text-xl font-black text-slate-900 flex items-center gap-1.5">
+          <span>{{ profile_user.profile.display_name }}</span>
+          <i data-lucide="check-circle" class="w-4 h-4 text-sky-500 fill-sky-500 text-white"></i>
+        </h2>
         <p class="text-xs text-slate-400 font-medium">@{{ profile_user.username }}</p>
       </div>
 
@@ -85,7 +93,7 @@
         {% endif %}
 
         {% if profile.website %}
-          <a href="{{ profile.website }}" target="_blank" rel="noopener" class="flex items-center gap-1 text-indigo-600 hover:underline">
+          <a href="{{ profile.website }}" target="_blank" rel="noopener" class="flex items-center gap-1 text-sky-600 hover:underline">
             <i data-lucide="link" class="w-3.5 h-3.5"></i>
             {{ profile.website }}
           </a>
@@ -100,12 +108,12 @@
       <!-- Follower / Following Stats -->
       <div class="flex items-center gap-6 text-xs pt-2">
         <a href="{% url 'accounts:following_list' profile_user.username %}" class="hover:underline">
-          <strong class="font-bold text-slate-900">{{ profile.following_count }}</strong>
-          <span class="text-slate-500">Following</span>
+          <strong class="font-bold text-slate-900 text-sm">{{ profile.following_count }}</strong>
+          <span class="text-slate-500 ml-1">Following</span>
         </a>
         <a href="{% url 'accounts:followers_list' profile_user.username %}" class="hover:underline">
-          <strong class="font-bold text-slate-900" id="profile-followers-count">{{ profile.followers_count }}</strong>
-          <span class="text-slate-500">Followers</span>
+          <strong class="font-bold text-slate-900 text-sm" id="profile-followers-count">{{ profile.followers_count }}</strong>
+          <span class="text-slate-500 ml-1">Followers</span>
         </a>
       </div>
     </div>
@@ -117,13 +125,13 @@
     <a href="?tab=posts" class="py-3 transition relative {% if tab != 'likes' %}text-slate-900 font-extrabold{% else %}text-slate-500 hover:bg-slate-50{% endif %}">
       Posts ({{ profile.posts_count }})
       {% if tab != 'likes' %}
-        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full"></span>
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-sky-600 rounded-full"></span>
       {% endif %}
     </a>
     <a href="?tab=likes" class="py-3 transition relative {% if tab == 'likes' %}text-slate-900 font-extrabold{% else %}text-slate-500 hover:bg-slate-50{% endif %}">
       Liked Posts
       {% if tab == 'likes' %}
-        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full"></span>
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-sky-600 rounded-full"></span>
       {% endif %}
     </a>
   </div>
@@ -131,13 +139,13 @@
   <!-- User Posts Stream -->
   <div class="divide-y divide-slate-100">
     {% for post in posts %}
-      <article class="post-card p-4 sm:p-5 hover:bg-slate-50/60 transition">
-        <div class="flex items-start gap-3">
+      <article class="post-card p-5 hover:bg-slate-50/70 transition">
+        <div class="flex items-start gap-3.5">
           <a href="{% url 'accounts:profile' post.author.username %}" class="shrink-0">
             {% if post.author.profile.avatar %}
-              <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}" class="w-10 h-10 rounded-full object-cover">
+              <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}" class="w-11 h-11 rounded-full object-cover ring-1 ring-slate-200">
             {% else %}
-              <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white flex items-center justify-center font-bold text-sm">
+              <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-sky-500 to-cyan-500 text-white flex items-center justify-center font-extrabold text-sm">
                 {{ post.author.username|first|upper }}
               </div>
             {% endif %}
@@ -146,8 +154,9 @@
           <div class="flex-grow min-w-0 space-y-2">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-1.5 truncate">
-                <a href="{% url 'accounts:profile' post.author.username %}" class="font-bold text-sm text-slate-900 hover:text-indigo-600 truncate">
-                  {{ post.author.profile.display_name }}
+                <a href="{% url 'accounts:profile' post.author.username %}" class="font-bold text-sm text-slate-900 hover:text-sky-600 truncate flex items-center gap-1">
+                  <span>{{ post.author.profile.display_name }}</span>
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-sky-500 fill-sky-500 text-white"></i>
                 </a>
                 <span class="text-xs text-slate-400 truncate">@{{ post.author.username }}</span>
                 <span class="text-slate-300 text-xs">·</span>
@@ -158,28 +167,38 @@
             <p class="text-sm text-slate-800 whitespace-pre-line leading-relaxed">{{ post.content }}</p>
 
             {% if post.image %}
-              <div class="rounded-2xl overflow-hidden border border-slate-200 mt-2 bg-slate-100 max-h-96">
+              <div class="rounded-2xl overflow-hidden border border-slate-200 mt-2 bg-slate-100 max-h-96 shadow-xs">
                 <img src="{{ post.image.url }}" alt="Post image" class="w-full h-full object-cover">
               </div>
             {% endif %}
 
-            <div class="flex items-center gap-8 pt-2 text-xs">
+            <div class="flex items-center gap-6 sm:gap-8 pt-2.5 text-xs">
               <button 
                 type="button" 
                 class="like-btn flex items-center gap-1.5 transition {% if post.id in user_liked_post_ids %}text-rose-500{% else %}text-slate-500 hover:text-rose-500{% endif %}"
                 data-post-id="{{ post.id }}"
               >
                 <i data-lucide="heart" class="like-icon w-4 h-4 {% if post.id in user_liked_post_ids %}fill-rose-500 text-rose-500{% else %}text-slate-400{% endif %}"></i>
-                <span class="like-count font-semibold">{{ post.likes_count }}</span>
+                <span class="like-count font-bold">{{ post.likes_count }}</span>
               </button>
 
-              <a href="{% url 'posts:post_detail' post.id %}" class="flex items-center gap-1.5 text-slate-500 hover:text-indigo-600 transition">
+              <a href="{% url 'posts:post_detail' post.id %}" class="flex items-center gap-1.5 text-slate-500 hover:text-sky-600 transition">
                 <i data-lucide="message-circle" class="w-4 h-4 text-slate-400"></i>
-                <span class="font-semibold">{{ post.comments_count }}</span>
+                <span class="font-bold">{{ post.comments_count }}</span>
               </a>
 
-              <a href="{% url 'posts:post_detail' post.id %}" class="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 transition ml-auto" title="View thread">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <button 
+                type="button" 
+                class="copy-post-link-btn flex items-center gap-1.5 text-slate-400 hover:text-sky-600 transition" 
+                data-url="{% url 'posts:post_detail' post.id %}" 
+                title="Copy post link"
+              >
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+              </button>
+
+              <a href="{% url 'posts:post_detail' post.id %}" class="flex items-center gap-1 text-slate-400 hover:text-slate-700 transition ml-auto text-[11px] font-semibold">
+                <span>View thread</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
               </a>
             </div>
 
@@ -187,9 +206,9 @@
         </div>
       </article>
     {% empty %}
-      <div class="p-10 text-center text-xs text-slate-400">
+      <div class="p-12 text-center text-xs text-slate-400">
         {% if tab == 'likes' %}
-          No liked posts to show.
+          No liked posts yet.
         {% else %}
           This user hasn't posted anything yet.
         {% endif %}

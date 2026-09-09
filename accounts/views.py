@@ -21,7 +21,7 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             auth_login(request, user)
-            messages.success(request, f"Welcome to CodeAlpha Social, @{user.username}!")
+            messages.success(request, f"Welcome to Nexus, @{user.username}!")
             return redirect('posts:feed')
         else:
             messages.error(request, "Please fix the errors below.")

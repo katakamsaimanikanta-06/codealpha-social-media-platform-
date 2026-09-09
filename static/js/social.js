@@ -1,6 +1,7 @@
 /**
- * CodeAlpha Social Media Platform - JavaScript Interactions
- * Handles AJAX likes, follow/unfollow, live comments, image previews, and toasts.
+ * Nexus Social Media Platform - JavaScript Interactions
+ * Handles AJAX likes, follow/unfollow, live comments, character counter, hashtag chips,
+ * copy post link, image preview, and animated toasts.
  */
 
 // CSRF Token Helper
@@ -32,12 +33,17 @@ function showToast(message, type = 'info') {
   }
 
   const toast = document.createElement('div');
-  const bgClass = type === 'error' ? 'bg-rose-600' : (type === 'success' ? 'bg-emerald-600' : 'bg-slate-900');
-  
-  toast.className = `toast-enter flex items-center justify-between p-3.5 text-white rounded-xl shadow-xl pointer-events-auto text-xs font-medium ${bgClass}`;
+  let bgClass = 'bg-slate-900';
+  if (type === 'error') bgClass = 'bg-rose-600';
+  else if (type === 'success') bgClass = 'bg-emerald-600';
+  else if (type === 'primary') bgClass = 'bg-sky-600';
+
+  toast.className = `toast-enter flex items-center justify-between p-3.5 text-white rounded-2xl shadow-xl pointer-events-auto text-xs font-semibold ${bgClass}`;
   toast.innerHTML = `
-    <span>${message}</span>
-    <button class="ml-3 text-white/75 hover:text-white" onclick="this.parentElement.remove()">✕</button>
+    <div class="flex items-center gap-2">
+      <span>${message}</span>
+    </div>
+    <button class="ml-3 text-white/70 hover:text-white" onclick="this.parentElement.remove()">✕</button>
   `;
 
   container.appendChild(toast);
@@ -50,7 +56,7 @@ function showToast(message, type = 'info') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   // 1. Like / Unlike AJAX Handling
   document.querySelectorAll('.like-btn').forEach(button => {
     button.addEventListener('click', async (e) => {
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.add('text-rose-500', 'fill-rose-500', 'heart-pop');
             button.classList.add('text-rose-500');
             button.classList.remove('text-slate-500');
-            setTimeout(() => icon.classList.remove('heart-pop'), 300);
+            setTimeout(() => icon.classList.remove('heart-pop'), 350);
           } else {
             icon.classList.remove('text-rose-500', 'fill-rose-500');
             icon.classList.add('text-slate-400');
@@ -120,14 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         if (data.status === 'success') {
           showToast(data.message, 'success');
-          
+
           if (data.following) {
             button.textContent = 'Following';
-            button.classList.remove('bg-slate-900', 'text-white', 'hover:bg-indigo-600');
+            button.classList.remove('bg-slate-900', 'text-white', 'hover:bg-sky-600');
             button.classList.add('bg-slate-100', 'text-slate-700', 'border', 'border-slate-300', 'hover:bg-rose-50', 'hover:text-rose-600', 'hover:border-rose-200');
           } else {
             button.textContent = 'Follow';
-            button.classList.add('bg-slate-900', 'text-white', 'hover:bg-indigo-600');
+            button.classList.add('bg-slate-900', 'text-white', 'hover:bg-sky-600');
             button.classList.remove('bg-slate-100', 'text-slate-700', 'border', 'border-slate-300', 'hover:bg-rose-50', 'hover:text-rose-600', 'hover:border-rose-200');
           }
 
@@ -173,7 +179,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. AJAX Comment Submission (on post detail page)
+  // 4. Character Counter & Hashtag Chips in Post Composer
+  const composerTextarea = document.querySelector('.composer-textarea');
+  const charCounter = document.getElementById('char-count-display');
+  if (composerTextarea && charCounter) {
+    const maxLen = 500;
+    composerTextarea.addEventListener('input', () => {
+      const len = composerTextarea.value.length;
+      charCounter.textContent = `${len} / ${maxLen}`;
+      if (len > 450) {
+        charCounter.classList.add('text-rose-500', 'font-bold');
+        charCounter.classList.remove('text-slate-400');
+      } else {
+        charCounter.classList.remove('text-rose-500', 'font-bold');
+        charCounter.classList.add('text-slate-400');
+      }
+    });
+  }
+
+  document.querySelectorAll('.hashtag-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const tag = chip.dataset.tag;
+      if (composerTextarea && tag) {
+        composerTextarea.value = composerTextarea.value.trim() + (composerTextarea.value.trim() ? ' ' : '') + tag + ' ';
+        composerTextarea.focus();
+        composerTextarea.dispatchEvent(new Event('input'));
+      }
+    });
+  });
+
+  // 5. Copy Post Link with Toast
+  document.querySelectorAll('.copy-post-link-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const rawUrl = btn.dataset.url || btn.getAttribute('href');
+      const fullUrl = rawUrl.startsWith('http') ? rawUrl : window.location.origin + rawUrl;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(fullUrl).then(() => {
+          showToast('Post link copied to clipboard! 📋', 'success');
+        }).catch(() => {
+          fallbackCopyText(fullUrl);
+        });
+      } else {
+        fallbackCopyText(fullUrl);
+      }
+    });
+  });
+
+  function fallbackCopyText(text) {
+    const tempInput = document.createElement('input');
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+      document.execCommand('copy');
+      showToast('Post link copied to clipboard! 📋', 'success');
+    } catch (err) {
+      showToast('Could not copy link', 'error');
+    }
+    document.body.removeChild(tempInput);
+  }
+
+  // 6. AJAX Comment Submission (on post detail page)
   const commentForm = document.getElementById('ajax-comment-form');
   if (commentForm) {
     commentForm.addEventListener('submit', async (e) => {
@@ -203,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         if (data.status === 'success') {
           input.value = '';
-          showToast('Comment posted!', 'success');
+          showToast('Comment posted! 💬', 'success');
 
           // Append to comments list
           const commentsList = document.getElementById('comments-list');
@@ -211,17 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
           if (noCommentsNotice) noCommentsNotice.remove();
 
           const commentEl = document.createElement('div');
-          commentEl.className = 'flex gap-3 py-3 border-b border-slate-100 last:border-0';
-          
+          commentEl.className = 'flex gap-3 py-3.5 border-b border-slate-100 last:border-0';
+
           const avatarMarkup = data.author_avatar 
             ? `<img src="${data.author_avatar}" alt="${data.author_name}" class="w-8 h-8 rounded-full object-cover shrink-0">`
-            : `<div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">${data.author_name.charAt(0).toUpperCase()}</div>`;
+            : `<div class="w-8 h-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs shrink-0">${data.author_name.charAt(0).toUpperCase()}</div>`;
 
           commentEl.innerHTML = `
             ${avatarMarkup}
             <div class="flex-grow space-y-1">
               <div class="flex items-center gap-2">
-                <a href="/accounts/user/${data.author_username}/" class="font-bold text-xs text-slate-900 hover:text-indigo-600">
+                <a href="/accounts/user/${data.author_username}/" class="font-bold text-xs text-slate-900 hover:text-sky-600">
                   ${data.author_name}
                 </a>
                 <span class="text-[11px] text-slate-400">@${data.author_username} · Just now</span>
@@ -245,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Auto dismiss flash alerts
+  // 7. Auto dismiss flash alerts
   document.querySelectorAll('.server-alert').forEach(alert => {
     setTimeout(() => {
       alert.style.transition = 'opacity 0.3s ease, transform 0.3s ease';

@@ -1,42 +1,46 @@
-# ⚡ Pulse - Mini Social Media Platform
+# ⚡ Nexus — The Modern Social Media Platform
 
-A full-stack, responsive modern mini Social Media web application built with **Django**, **SQLite**, **HTML5**, **CSS3 (Tailwind)**, and **JavaScript (AJAX)**.
+A full-stack, responsive modern Social Media web application built with **Django**, **SQLite**, **HTML5**, **Tailwind CSS**, and **Vanilla JavaScript (AJAX)**.
+
+Designed with a sleek, creator-first social experience featuring an electric **Sky Blue & Emerald** aesthetic, **Plus Jakarta Sans** typography, an Instagram-style **Stories reel**, an interactive **Post Studio** with character countdown, and instant AJAX interactions.
 
 ---
 
 ## ✨ Key Features
 
-- **👤 User Profiles & Authentication**:
+- **👤 Creator Profiles & Authentication**:
   - Secure registration, sign-in, and sign-out with instant flash toasts.
-  - Profile customization: Avatar upload, Cover header image, Display name, Bio, Location, and Website.
-  - Follower count, Following count, and Posts count.
-  - Tabbed profile views: **User Posts** and **Liked Posts**.
+  - Profile customization: Avatar upload, Cover header banner, Display name, Bio, Location, and Website.
+  - Real-time Follower count, Following count, and Posts count.
+  - Tabbed creator views: **Creator Posts** and **Liked Posts**.
 
-- **📝 Post Management (CRUD)**:
-  - **Create**: Top composer card with text input, image attachment preview, and instant publish.
-  - **View**: Responsive feed cards and dedicated single-post thread views.
-  - **Edit**: Post owners can edit post text and replace images.
-  - **Delete**: Post owners can delete their own posts with a confirmation prompt.
+- **📝 Post Management (Full CRUD)**:
+  - **Create**: Post Studio with live character countdown (500 limit), hashtag chips, image attachment preview, and instant publish.
+  - **View**: Responsive feed stream cards and dedicated single-post thread discussions (`/post/<id>/`).
+  - **Edit**: Post owners can edit post text and replace attached images (`/post/<id>/edit/`).
+  - **Delete**: Secure confirmation prompt and permanent post deletion (`/post/<id>/delete/`).
 
-- **❤️ Social Interactivity**:
-  - **Like / Unlike (AJAX)**: Instant heart toggle with bounce micro-animation and live counter without page refresh.
-  - **Comments (AJAX)**: Post comments in real-time, view timestamped comment threads with author avatars, and allow authors to delete comments.
-  - **Follow / Unfollow (AJAX)**: Instant follow button on profiles, suggested user cards, and followers lists.
-  - **Followers & Following Lists**: Dedicated views showing follower/following user cards with follow toggles.
+- **❤️ Social Interactivity (AJAX)**:
+  - **Like / Unlike**: Real-time heart toggle with bounce micro-animation and live counter without page refresh.
+  - **Comments**: Post comments in real-time via AJAX, view timestamped comment threads with author avatars, and allow authors to delete comments.
+  - **Follow / Unfollow**: Instant follow button on profiles, suggested creator cards, and followers lists.
+  - **Followers & Following Lists**: Dedicated tabs showing follower and following user cards with direct follow toggles.
+  - **Share**: 1-click "Copy post link" action with instant toast confirmation.
 
-- **📰 Smart Feeds**:
-  - **Following Feed (Home)**: Chronological stream of posts from creators you follow + your own posts.
-  - **Explore Feed (Discover)**: Global stream of all posts across the community to discover new creators.
-  - **Search**: Search bar filtering posts by content, hashtag, or author username.
+- **📰 Smart Feeds & Discovery**:
+  - **Stories / Active Creators Reel**: Horizontal scrollable creator avatars with colorful gradient rings along the top of the feed.
+  - **Following Stream**: Chronological stream of posts from creators you follow + your own posts.
+  - **Explore Community**: Global stream of all posts across the community to discover new creators.
+  - **Search**: Live search bar filtering posts by content, hashtag, or author username.
 
-- **🎨 Modern 3-Column UI Layout**:
-  - **Left Sidebar**: Brand logo, Navigation links (Home, Explore, My Profile, Edit Profile, Admin Panel, Sign Out).
-  - **Center Feed**: Sticky header, Post Composer, Tab Switcher, and Post stream.
-  - **Right Sidebar**: Search bar, "Who to Follow" recommendations widget, and Trending Topics.
+- **🎨 Modern 3-Column Social UI**:
+  - **Left Sidebar**: Nexus brand logo, Navigation links (Home, Explore, My Profile, Settings, Admin Panel, Sign Out).
+  - **Center Feed**: Sticky header, Stories reel, Post Studio, Tab Switcher, and Post stream.
+  - **Right Sidebar**: Search bar, "Creators to Follow" recommendations widget, and Trending Topics.
   - **Mobile**: Responsive bottom navigation bar and mobile top header.
 
 - **🌱 Automated Seed Data**:
-  - Single command `python manage.py seed_social_data` populates 5 realistic users, avatars, posts with imagery, follow relationships, likes, and comment threads out of the box!
+  - Single command `python manage.py seed_social_data` populates realistic demo creators (`@nexus.io`), avatars, posts with imagery, follow relationships, likes, and comment threads out of the box!
 
 ---
 
@@ -45,7 +49,7 @@ A full-stack, responsive modern mini Social Media web application built with **D
 - **Backend**: Python 3.13+, Django 6.1+
 - **Database**: SQLite3
 - **Frontend**: HTML5, Tailwind CSS (via CDN), Custom CSS, Vanilla JavaScript (AJAX)
-- **Icons & Typography**: Lucide Icons, Google Inter font
+- **Typography & Icons**: Plus Jakarta Sans, Lucide Icons
 - **Image Processing**: Pillow
 
 ---
@@ -67,11 +71,10 @@ python -m pip install django pillow
 
 ### 4. Apply Database Migrations
 ```powershell
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 5. Seed Demo Users, Posts & Relationships
+### 5. Seed Demo Creators, Posts & Relationships
 Run the automated seed command:
 ```powershell
 python manage.py seed_social_data
@@ -93,11 +96,11 @@ Now open your web browser and navigate to:
 
 | Username | Password | Full Name | Bio / Role |
 | :--- | :--- | :--- | :--- |
-| **`alex_tech`** | `password123` | Alex Rivera | Full-Stack Engineer & Python enthusiast |
-| **`sarah_design`** | `password123` | Sarah Chen | Senior Product Designer & UI/UX specialist |
-| **`marcus_ai`** | `password123` | Marcus Vance | AI/ML Researcher working on agentic workflows |
-| **`emma_travel`** | `password123` | Emma Watson | Photographer, explorer & storyteller |
-| **`admin`** | `admin123` | CodeAlpha Admin | Superuser access to `/admin/` |
+| **`alex_tech`** | `password123` | Alex Rivera | Full-Stack Software Engineer |
+| **`sarah_design`** | `password123` | Sarah Chen | Senior Product Designer |
+| **`marcus_ai`** | `password123` | Marcus Vance | AI/ML Researcher |
+| **`emma_travel`** | `password123` | Emma Watson | Photographer & Explorer |
+| **`admin`** | `admin123` | Nexus Admin | Platform Administrator (`/admin/`) |
 
 > *Tip: The Login page includes one-click autofill buttons for `@alex_tech` and `@sarah_design`!*
 
@@ -113,8 +116,9 @@ python manage.py test
 
 Expected output:
 ```
-Ran 10 tests in ...s
+Ran 10 tests in 25.980s
 OK
+System check identified no issues (0 silenced).
 ```
 
 ---
@@ -149,7 +153,7 @@ social_media_platform/
 ├── templates/                 # Modern UI Templates
 │   ├── base.html              # 3-column layout, sidebar navigation, widgets
 │   ├── posts/
-│   │   ├── feed.html          # Following Feed, Explore, Post Composer
+│   │   ├── feed.html          # Stories reel, Post Studio, following stream
 │   │   ├── post_detail.html   # Single post thread & live comments
 │   │   ├── post_edit.html     # Author post editor
 │   │   └── post_confirm_delete.html
@@ -160,12 +164,7 @@ social_media_platform/
 │       ├── login.html         # Login with quick autofill
 │       └── register.html      # Registration form
 ├── static/
-│   ├── css/custom.css         # Animations, forms, scrollbars
-│   └── js/social.js           # AJAX like/unlike, follow/unfollow, live comments
+│   ├── css/custom.css         # Animations, story rings, forms, scrollbars
+│   └── js/social.js           # AJAX like/unlike, follow/unfollow, live comments, copy link
 └── README.md
 ```
-
----
-
-## 📄 License
-Created for demonstration and educational purposes as part of the CodeAlpha Internship Program.

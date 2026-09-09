@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} | CodeAlpha Social{% endblock %}
+{% block title %}{{ title }} | Nexus{% endblock %}
 
 {% block content %}
 <div class="space-y-0 divide-y divide-slate-100">
 
   <!-- Header -->
-  <div class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-3.5 flex items-center gap-4">
-    <a href="{% url 'accounts:profile' target_user.username %}" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition">
+  <div class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-3.5 flex items-center gap-3.5">
+    <a href="{% url 'accounts:profile' target_user.username %}" class="p-2 text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition">
       <i data-lucide="arrow-left" class="w-5 h-5"></i>
     </a>
     <div>
-      <h1 class="text-base font-extrabold text-slate-900 leading-tight">{{ target_user.profile.display_name }}</h1>
+      <h1 class="text-base font-extrabold text-slate-900 leading-tight flex items-center gap-1">
+        <span>{{ target_user.profile.display_name }}</span>
+        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-sky-500 fill-sky-500 text-white"></i>
+      </h1>
       <p class="text-xs text-slate-400">@{{ target_user.username }}</p>
     </div>
   </div>
@@ -22,13 +25,13 @@
     <a href="{% url 'accounts:followers_list' target_user.username %}" class="py-3 transition relative {% if active_type == 'followers' %}text-slate-900 font-extrabold{% else %}text-slate-500 hover:bg-slate-50{% endif %}">
       Followers
       {% if active_type == 'followers' %}
-        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full"></span>
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-sky-600 rounded-full"></span>
       {% endif %}
     </a>
     <a href="{% url 'accounts:following_list' target_user.username %}" class="py-3 transition relative {% if active_type == 'following' %}text-slate-900 font-extrabold{% else %}text-slate-500 hover:bg-slate-50{% endif %}">
       Following
       {% if active_type == 'following' %}
-        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full"></span>
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-sky-600 rounded-full"></span>
       {% endif %}
     </a>
   </div>
@@ -36,17 +39,20 @@
   <!-- Users List -->
   <div class="divide-y divide-slate-100">
     {% for u in follow_users %}
-      <div class="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-slate-50/60 transition">
-        <a href="{% url 'accounts:profile' u.username %}" class="flex items-center gap-3 min-w-0 group">
+      <div class="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-slate-50/70 transition">
+        <a href="{% url 'accounts:profile' u.username %}" class="flex items-center gap-3.5 min-w-0 group">
           {% if u.profile.avatar %}
-            <img src="{{ u.profile.avatar.url }}" alt="{{ u.username }}" class="w-12 h-12 rounded-full object-cover shrink-0">
+            <img src="{{ u.profile.avatar.url }}" alt="{{ u.username }}" class="w-12 h-12 rounded-full object-cover ring-1 ring-slate-200 shrink-0">
           {% else %}
-            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white flex items-center justify-center font-bold text-sm shrink-0">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-sky-500 to-cyan-500 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
               {{ u.username|first|upper }}
             </div>
           {% endif %}
           <div class="truncate">
-            <p class="font-bold text-sm text-slate-900 group-hover:text-indigo-600 truncate">{{ u.profile.display_name }}</p>
+            <p class="font-bold text-sm text-slate-900 group-hover:text-sky-600 truncate flex items-center gap-1">
+              <span>{{ u.profile.display_name }}</span>
+              <i data-lucide="check-circle" class="w-3.5 h-3.5 text-sky-500 fill-sky-500 text-white"></i>
+            </p>
             <p class="text-xs text-slate-400 truncate">@{{ u.username }}</p>
             {% if u.profile.bio %}
               <p class="text-xs text-slate-600 truncate mt-0.5 max-w-sm">{{ u.profile.bio }}</p>
@@ -56,7 +62,7 @@
 
         {% if user.is_authenticated and user != u %}
           <button 
-            class="follow-toggle-btn px-4 py-1.5 rounded-full text-xs font-bold transition shrink-0 {% if u.id in current_following_ids %}bg-slate-100 text-slate-700 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200{% else %}bg-slate-900 text-white hover:bg-indigo-600{% endif %}"
+            class="follow-toggle-btn px-4 py-2 rounded-full text-xs font-bold transition shrink-0 shadow-xs {% if u.id in current_following_ids %}bg-slate-100 text-slate-700 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200{% else %}bg-slate-900 text-white hover:bg-sky-600{% endif %}"
             data-username="{{ u.username }}"
           >
             {% if u.id in current_following_ids %}Following{% else %}Follow{% endif %}
@@ -64,8 +70,8 @@
         {% endif %}
       </div>
     {% empty %}
-      <div class="p-10 text-center text-xs text-slate-400">
-        No users to display in this list.
+      <div class="p-12 text-center text-xs text-slate-400">
+        No creators found in this list.
       </div>
     {% endfor %}
   </div>

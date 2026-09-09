@@ -17,7 +17,7 @@ def social_context(request):
     trending_tags = [
         {'tag': '#WebDev', 'posts': '12.4K'},
         {'tag': '#DjangoPython', 'posts': '8.2K'},
-        {'tag': '#CodeAlpha', 'posts': '5.7K'},
+        {'tag': '#NexusCreators', 'posts': '18.3K'},
         {'tag': '#AIandTech', 'posts': '24.1K'},
         {'tag': '#OpenSource', 'posts': '3.9K'},
     ]

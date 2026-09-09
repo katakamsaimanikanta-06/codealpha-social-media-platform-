@@ -29,8 +29,8 @@ class Command(BaseCommand):
         admin_user, created = User.objects.get_or_create(
             username='admin',
             defaults={
-                'email': 'admin@pulse.com',
-                'first_name': 'CodeAlpha',
+                'email': 'admin@nexus.io',
+                'first_name': 'Nexus',
                 'last_name': 'Admin',
                 'is_staff': True,
                 'is_superuser': True,
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             admin_user.set_password('admin123')
             admin_user.save()
             admin_profile, _ = Profile.objects.get_or_create(user=admin_user)
-            admin_profile.bio = "Official Administrator of the Pulse Social Platform."
+            admin_profile.bio = "Official Administrator of the Nexus Social Platform."
             admin_profile.location = "Global HQ"
             admin_profile.save()
             self.stdout.write(self.style.SUCCESS("Superuser 'admin' created."))
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 'username': 'alex_tech',
                 'first_name': 'Alex',
                 'last_name': 'Rivera',
-                'email': 'alex@codealpha.com',
+                'email': 'alex@nexus.io',
                 'bio': 'Full-Stack Software Engineer & Python enthusiast. Building scalable web architectures and open-source tools. 💻⚡',
                 'location': 'San Francisco, CA',
                 'website': 'https://github.com',
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 'username': 'sarah_design',
                 'first_name': 'Sarah',
                 'last_name': 'Chen',
-                'email': 'sarah@codealpha.com',
+                'email': 'sarah@nexus.io',
                 'bio': 'Senior Product Designer & UI/UX specialist. Passionate about typography, clean minimalism, and accessible web experiences. ✨🎨',
                 'location': 'New York, NY',
                 'website': 'https://dribbble.com',
@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 'username': 'marcus_ai',
                 'first_name': 'Marcus',
                 'last_name': 'Vance',
-                'email': 'marcus@codealpha.com',
+                'email': 'marcus@nexus.io',
                 'bio': 'AI/ML Researcher working on agentic workflows and transformer architectures. Coffee lover and tech tinkerer. 🤖☕',
                 'location': 'Seattle, WA',
                 'website': 'https://arxiv.org',
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                 'username': 'emma_travel',
                 'first_name': 'Emma',
                 'last_name': 'Watson',
-                'email': 'emma@codealpha.com',
+                'email': 'emma@nexus.io',
                 'bio': 'Photographer, explorer & storyteller. Capturing everyday beauty and quiet moments around the globe. 📸✈️',
                 'location': 'London, UK',
                 'website': 'https://instagram.com',
