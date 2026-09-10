@@ -88,7 +88,7 @@ python manage.py runserver
 *(If port 8000 is occupied by another app, you can run on port 8080: `python manage.py runserver 8080`)*.
 
 Now open your web browser and navigate to:
-👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8080/)**
+👉 **[http://127.0.0.1:8080/](http://127.0.0.1:8080/)**
 
 ---
 
